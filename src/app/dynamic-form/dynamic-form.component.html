@@ -1,0 +1,28 @@
+
+<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+    <ul>
+        <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: formSchema.layout }"></ng-container>
+    </ul>
+
+    <ng-template #recursiveListTmpl let-prop="prop">
+        @for(item of prop; track item; let index = $index) {
+            <li>
+                {{ item?.widget?.type }}
+                @if(item.items && item.items.length > 0) {
+                    <ul>
+                        <ng-container
+                            *ngTemplateOutlet="recursiveListTmpl; context:{ prop: item.items }"
+                        ></ng-container>
+                    </ul>
+                } @else {
+                    <ul>
+                        {{ formSchema.properties[item].title }}
+                        <input id="zip" type="text" [formControlName]="item">
+                    </ul>
+                }
+            </li>
+        }
+    </ng-template>
+
+    <button type="submit" [disabled]="!dynamicForm.valid">Submit</button>
+</form>
