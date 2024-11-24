@@ -32,18 +32,13 @@
                                         <mat-option [value]="selectItem.const">{{ selectItem.title }}</mat-option>
                                     }
                                 </mat-select>
+                            } @else if(formSchema.properties[item].widget.type === 'textarea') {
+                                <textarea matInput class="form-property-input" [formControlName]="item"></textarea>
                             } @else {
                                 <input matInput class="form-property-input" [formControlName]="item" />
                             }
                             <!-- errors area -->
-                            @if (dynamicForm.get(item)?.invalid && (dynamicForm.get(item)?.dirty || dynamicForm.get(item)?.touched)) {
-                                @if (dynamicForm.get(item)?.hasError('required')) {
-                                    <mat-error>Zadejte hodnotu</mat-error>
-                                }
-                                @if (!dynamicForm.get(item)?.hasError('required') && dynamicForm.get(item)?.hasError('forbiddenText')) {
-                                    <mat-error>{{ formSchema.properties[item].widget.validationMessages?.pattern || 'Neplatná hodnota' }}</mat-error>
-                                }
-                            }
+                            <mat-error>{{ getError(item) }}</mat-error>
                         </mat-form-field>
                     </div>
                 }

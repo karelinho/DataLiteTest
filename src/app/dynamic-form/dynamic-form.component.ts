@@ -77,4 +77,16 @@ export class DynamicFormComponent {
   getFormValue() {
     return JSON.stringify(this.dynamicForm.value, null, 4);
   }
+
+  getError(controlName: string) {
+    if (this.dynamicForm.get(controlName)?.invalid && (this.dynamicForm.get(controlName)?.dirty || this.dynamicForm.get(controlName)?.touched)) {
+      if (this.dynamicForm.get(controlName)?.hasError('required')) {
+          return 'Zadejte hodnotu';
+      }
+      if (!this.dynamicForm.get(controlName)?.hasError('required') && this.dynamicForm.get(controlName)?.hasError('forbiddenText')) {
+          return this.formSchema.properties[controlName].widget.validationMessages?.pattern || 'Neplatná hodnota';
+      }
+    }
+    return null;
+  }
 }
