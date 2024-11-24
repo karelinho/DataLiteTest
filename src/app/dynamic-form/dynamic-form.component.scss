@@ -1,0 +1,42 @@
+app-dynamic-form {
+    mat-list.dtl-fluent-card {
+        margin: 10px;
+        border: 1px solid #cccccc;
+        border-radius: 10px;
+    }
+
+    div.dtl-fluent-columns {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .form-property-name {
+        display: inline-block;
+    }
+
+    mat-list.dtl-fluent-card .form-property-name {
+        width: 300px;
+    }
+
+    div.dtl-fluent-columns .form-property-name {
+        width: 150px;
+    }
+
+    .list-item-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .form-property-item {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    .form-property-input {
+        width: 100%;
+    }
+
+    .code-box {
+        margin: 10px;
+    }
+}

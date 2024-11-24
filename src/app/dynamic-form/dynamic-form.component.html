@@ -1,28 +1,48 @@
 
-<form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
-    <ul>
-        <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: formSchema.layout }"></ng-container>
-    </ul>
+<form id="dynamic-form" [formGroup]="dynamicForm" autocomplete="on">
+
+    <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: formSchema.layout }"></ng-container>
 
     <ng-template #recursiveListTmpl let-prop="prop">
         @for(item of prop; track item; let index = $index) {
-            <li>
-                {{ item?.widget?.type }}
                 @if(item.items && item.items.length > 0) {
-                    <ul>
-                        <ng-container
-                            *ngTemplateOutlet="recursiveListTmpl; context:{ prop: item.items }"
-                        ></ng-container>
-                    </ul>
+                    @if(item.widget.type === 'dtl-fluent-card') {
+                        <mat-list class="dtl-fluent-card">
+                            <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: item.items }"></ng-container>
+                        </mat-list>
+                    } @else if(item.widget.type === 'dtl-fluent-columns') {
+                        <div class="dtl-fluent-columns">
+                            @for(column of item.config.columns; track column; let index = $index) {
+                                <mat-list [ngStyle]="{'width.%': 100 / item.config.columns.length}">
+                                    <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: getColumnItems(column, item.items) }"></ng-container>
+                                </mat-list>
+                            }
+                        </div>
+                    } @else {
+                        <ng-container *ngTemplateOutlet="recursiveListTmpl; context:{ prop: item.items }"></ng-container>
+                    }
                 } @else {
-                    <ul>
-                        {{ formSchema.properties[item].title }}
-                        <input id="zip" type="text" [formControlName]="item">
-                    </ul>
+                    <mat-list-item>
+                        <div class="list-item-container">
+                            <span class="form-property-name">{{ formSchema.properties[item].title }}</span>
+                            <span class="form-property-item">
+                                @if(formSchema.properties[item].widget.type === 'select') {
+                                <select class="form-property-input" [name]="item" [formControlName]="item">
+                                    @for(selectItem of formSchema.properties[item].oneOf; track selectItem; let index = $index) {
+                                        <option [value]="selectItem.const">{{ selectItem.title }}</option>
+                                    }
+                                </select>
+                                } @else {
+                                    <input class="form-property-input" [name]="item" autocomplete="on" [type]="formSchema.properties[item].widget.type" [formControlName]="item">
+                                }
+                            </span>
+                        </div>
+                    </mat-list-item>
                 }
-            </li>
         }
     </ng-template>
-
-    <button type="submit" [disabled]="!dynamicForm.valid">Submit</button>
 </form>
+
+<div class="code-box">
+    <pre><code>{{ getFormValue() }}</code></pre>
+</div>
