@@ -5,6 +5,8 @@ import { FormSchema } from '../interfaces';
 import { CommonModule, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 export function inputTextValidator(inputRe: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -24,7 +26,9 @@ export function inputTextValidator(inputRe: string): ValidatorFn {
     FormsModule,
     MatListModule,
     CommonModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
   ],
   templateUrl: './dynamic-form.component.html',
   styleUrl: './dynamic-form.component.scss',
@@ -40,10 +44,6 @@ export class DynamicFormComponent {
     this.formSchema = this.formService.getFormStructure();
     for (let prop in this.formSchema.properties) {
       this.dynamicForm.addControl(prop, new FormControl(''));
-      this.dynamicForm.controls[prop].reset();
-      this.dynamicForm.controls[prop].setErrors(null);
-      this.dynamicForm.controls[prop].markAsUntouched();
-      this.dynamicForm.controls[prop].markAsPristine();
       let validators: ValidatorFn[] = [];
       if (this.isRequired(prop)) {
         validators.push(Validators.required);
@@ -51,15 +51,11 @@ export class DynamicFormComponent {
       const pattern = this.formSchema.properties[prop].pattern;
       if (pattern) {
         validators.push(inputTextValidator(pattern));
-        console.log(pattern);
       }
       if (validators.length > 0) {
         this.dynamicForm.controls[prop].setValidators(validators);
       }
     }
-    // this.dynamicForm.markAsUntouched({onlySelf: false});
-    // this.dynamicForm.markAsPristine({onlySelf: false});
-    // this.dynamicForm.clearValidators();
   }
 
   isRequired(name: string): boolean {
