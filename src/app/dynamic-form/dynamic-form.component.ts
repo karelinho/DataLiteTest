@@ -4,11 +4,12 @@ import { FormService } from '../form.service';
 import { FormSchema } from '../interfaces';
 import { CommonModule, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export function inputTextValidator(inputRe: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const forbidden = new RegExp(inputRe).test(control.value);
-    return forbidden ? { forbiddenText: { value: control.value } } : null;
+    const valid = new RegExp(inputRe).test(control.value);
+    return !valid ? { forbiddenText: { value: control.value } } : null;
   };
 }
 
@@ -22,7 +23,8 @@ export function inputTextValidator(inputRe: string): ValidatorFn {
     ReactiveFormsModule,
     FormsModule,
     MatListModule,
-    CommonModule
+    CommonModule,
+    MatFormFieldModule
   ],
   templateUrl: './dynamic-form.component.html',
   styleUrl: './dynamic-form.component.scss',
@@ -38,14 +40,26 @@ export class DynamicFormComponent {
     this.formSchema = this.formService.getFormStructure();
     for (let prop in this.formSchema.properties) {
       this.dynamicForm.addControl(prop, new FormControl(''));
+      this.dynamicForm.controls[prop].reset();
+      this.dynamicForm.controls[prop].setErrors(null);
+      this.dynamicForm.controls[prop].markAsUntouched();
+      this.dynamicForm.controls[prop].markAsPristine();
+      let validators: ValidatorFn[] = [];
       if (this.isRequired(prop)) {
-        this.dynamicForm.controls[prop].setValidators([Validators.required]);
+        validators.push(Validators.required);
       }
       const pattern = this.formSchema.properties[prop].pattern;
       if (pattern) {
-        this.dynamicForm.controls[prop].setValidators([inputTextValidator(pattern)]);
+        validators.push(inputTextValidator(pattern));
+        console.log(pattern);
+      }
+      if (validators.length > 0) {
+        this.dynamicForm.controls[prop].setValidators(validators);
       }
     }
+    // this.dynamicForm.markAsUntouched({onlySelf: false});
+    // this.dynamicForm.markAsPristine({onlySelf: false});
+    // this.dynamicForm.clearValidators();
   }
 
   isRequired(name: string): boolean {

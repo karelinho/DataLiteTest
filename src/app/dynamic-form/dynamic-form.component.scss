@@ -36,7 +36,12 @@ app-dynamic-form {
         width: 100%;
     }
 
-    .code-box {
-        margin: 10px;
+    .code-box,
+    .send-button {
+        margin-left: 10px;
+    }
+
+    div.dtl-fluent-columns .error-box {
+        margin-left: 150px;
     }
 }

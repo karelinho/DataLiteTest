@@ -33,14 +33,29 @@
                                     }
                                 </select>
                                 } @else {
-                                    <input class="form-property-input" [name]="item" autocomplete="on" [type]="formSchema.properties[item].widget.type" [formControlName]="item">
+                                    <input class="form-property-input"
+                                        [name]="item"
+                                        autocomplete="on"
+                                        [type]="formSchema.properties[item].widget.type"
+                                        [formControlName]="item" />
                                 }
                             </span>
+                        </div>
+                        <div class="error-box">
+                            @if (dynamicForm.get(item)?.invalid && (dynamicForm.get(item)?.dirty || dynamicForm.get(item)?.touched)) {
+                                @if (dynamicForm.get(item)?.hasError('required')) {
+                                    <mat-error>Zadejte hodnotu</mat-error>
+                                }
+                                @if (!dynamicForm.get(item)?.hasError('required') && dynamicForm.get(item)?.hasError('forbiddenText')) {
+                                    <mat-error>{{ formSchema.properties[item].widget.validationMessages?.pattern || 'Neplatná hodnota' }}</mat-error>
+                                }
+                            }
                         </div>
                     </mat-list-item>
                 }
         }
     </ng-template>
+    <button class="send-button" [disabled]="!dynamicForm.valid">Send</button>
 </form>
 
 <div class="code-box">
