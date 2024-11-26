@@ -22,7 +22,8 @@ app-dynamic-form {
         margin: 0 20px;
     }
 
-    div.dtl-fluent-columns {
+    div.dtl-fluent-columns,
+    .date-input {
         display: flex;
         flex-direction: row;
     }

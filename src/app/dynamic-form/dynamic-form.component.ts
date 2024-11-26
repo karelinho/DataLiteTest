@@ -7,6 +7,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 export function inputTextValidator(inputRe: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -28,7 +30,12 @@ export function inputTextValidator(inputRe: string): ValidatorFn {
     CommonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule
+  ],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'cs-CZ'},
+    provideNativeDateAdapter()
   ],
   templateUrl: './dynamic-form.component.html',
   styleUrl: './dynamic-form.component.scss',
