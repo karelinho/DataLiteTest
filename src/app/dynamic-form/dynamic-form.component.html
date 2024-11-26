@@ -36,7 +36,7 @@
                                 <textarea matInput class="form-property-input" [formControlName]="item"></textarea>
                             } @else if(formSchema.properties[item].widget.type === 'date') {
                                 <div class="date-input">
-                                    <input matInput [matDatepicker]="picker">
+                                    <input matInput [matDatepicker]="picker" [formControlName]="item">
                                     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker></mat-datepicker>
                                 </div>
